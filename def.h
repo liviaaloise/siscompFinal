@@ -1,6 +1,6 @@
 #define MAX 21
 #define RAJ 20
-#define key 9938
+#define key 9920
 
 
 typedef enum{

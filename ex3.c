@@ -15,5 +15,6 @@ int main(){
         printf("pid: %d\n",getpid());
         sleep(1);
     }
+    kill(getpid(),SIGCHLD);
 	return 0;
 } 

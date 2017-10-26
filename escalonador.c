@@ -121,22 +121,19 @@ resultEx execProc(Proc *p, int t){
 	if (p->estado==novo){ //processo novo -> criar processo filho
         printf("entrou criar outro processo\n");
 		pid=fork();
-        
         if(pid<0){printf("erro no fork");exit(-1);}
 		if(pid==0){ //processo filho
             printf("entrei no filho \n");
             strcpy(aux,p->nome);
 			strcat(aux,cmdC);
-            printf("aux: %s -- nome:%s",aux,p->nome );
 			kill(getpid(),SIGSTOP);
 			execv(aux,arg);
 		}
-        else{
-            waitpid(-1,&status,0);
-        }
 	}
 	indR = indice_Rajada(p);
+    printf("t: %d -- raj %d\n",t,p->raj[indR]);
 	if(t >= p->raj[indR]){ //se eu tenho >= tempo pra executar do que a rajada que o processo ta
+        printf("Vai executar pid %d\n",p->pid);
 		kill(p->pid,SIGCONT);
 		sleep(p->raj[indR]); //executa durante esse tempo
 		kill(p->pid,SIGSTOP);
@@ -256,6 +253,11 @@ void fimHandler(int signal){
         printf("Nao foi possivel destruir a memoria\n");
         exit(1);
    	}
+    free(fila1);
+    free(fila2);
+    free(fila3);
+    free(filaIO);
+    
     printf("Terminando o escalonador\n");
     exit(0);
 }
