@@ -117,12 +117,12 @@ resultEx execProc(Proc *p, int t){
 	
 	char cmdC[MAX]=".c",aux[MAX] ;
     char *const arg[]= {p->nome, NULL};
-	int indR,pid,status;
+	int indR;
 	if (p->estado==novo){ //processo novo -> criar processo filho
         printf("entrou criar outro processo\n");
-		pid=fork();
-        if(pid<0){printf("erro no fork");exit(-1);}
-		if(pid==0){ //processo filho
+		p->pid=fork();
+        if(p->pid<0){printf("erro no fork");exit(-1);}
+		if(p->pid==0){ //processo filho
             printf("entrei no filho \n");
             strcpy(aux,p->nome);
 			strcat(aux,cmdC);
@@ -131,9 +131,10 @@ resultEx execProc(Proc *p, int t){
 		}
 	}
 	indR = indice_Rajada(p);
-    printf("t: %d -- raj %d\n",t,p->raj[indR]);
+    
 	if(t >= p->raj[indR]){ //se eu tenho >= tempo pra executar do que a rajada que o processo ta
         printf("Vai executar pid %d\n",p->pid);
+        
 		kill(p->pid,SIGCONT);
 		sleep(p->raj[indR]); //executa durante esse tempo
 		kill(p->pid,SIGSTOP);
@@ -183,11 +184,9 @@ void IOHandler(int signal){
 }
 
 void CHLDHandler(int signal){
-
-	printf("entrou no chld \n");
 	
-	int pidE= waitpid(-1, NULL, WNOHANG);
-    printf("CHLD pidE= %d \n",pidE);
+	int pidE= waitpid(-1, NULL, 0);
+
 	if (pidE==0)//Processo parou por um sinal
 	{
 		return;//Nao faz nada;
