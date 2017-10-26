@@ -137,7 +137,7 @@ resultEx execProc(Proc *p, int t){
 	}
 	indR = indice_Rajada(p);
 	if(t >= p->raj[indR]){ //se eu tenho >= tempo pra executar do que a rajada que o processo ta
-		kill(p->pid,SIGINT);
+		kill(p->pid,SIGCONT);
 		sleep(p->raj[indR]); //executa durante esse tempo
 		kill(p->pid,SIGSTOP);
 		p->raj[indR]=0; //zera o tempo da rajada
@@ -151,7 +151,7 @@ resultEx execProc(Proc *p, int t){
 		}
 	}
 	if(t < p->raj[indR]){//menos tempo do q precisa
-		kill(p->pid,SIGINT);
+		kill(p->pid,SIGCONT);
 		sleep(t); //executa durante t
 		kill(p->pid,SIGSTOP);
 		p->raj[indR]-=t;
